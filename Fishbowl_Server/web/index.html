@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Fishbowl!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="index.css">
+    </head>
+    <body>
+         
+        <header>Submit your entries below:</header>
+
+        <form name="entryForm" action="addEntries" method="POST" autocomplete="off">
+            
+            <input type="text" name="entry1" value="" size="20" /><br>
+            <input type="text" name="entry2" value="" size="20" /><br>
+            <input type="text" name="entry3" value="" size="20" /><br>
+            <input type="text" name="entry4" value="" size="20" /><br>
+            <input type="text" name="entry5" value="" size="20" /><br>
+            
+            <input type="hidden" name ="numEntries" value ="5"/>
+            
+            <input type="submit" value="Submit" />
+            
+        </form>
+
+    </body>
+</html>
