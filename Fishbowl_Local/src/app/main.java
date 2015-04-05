@@ -5,17 +5,43 @@
  */
 package app;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
 /**
  *
  * @author haywoosd
  */
 public class main {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    static CyclicBarrier barrier = new CyclicBarrier(2);
+
+    static List<String> phraseList;
+    static int pos = 0;
+
+    public static void main(String[] args) throws IOException, InterruptedException, BrokenBarrierException {
+
+        phraseList = Files.readAllLines(Paths.get(System.getProperty("user.home") + "\\desktop\\Fishbowl Entries.txt"));
+
+        GameFrame frame = new GameFrame();
+
+        frame.setVisible(true);
+
+        Collections.shuffle(phraseList);
+
+        frame.pauseGame("The game is paused while waiting to start. Press resume to start.");
+        frame.switchTeam(1);
+
+        barrier.await();
+
+        frame.nextPhrase();
+        frame.startTimer(0, 5, 0);
+
     }
-    
+
 }
