@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Phaser;
 
 /**
  *
@@ -19,7 +19,7 @@ import java.util.concurrent.CyclicBarrier;
  */
 public class main {
 
-    static CyclicBarrier barrier = new CyclicBarrier(2);
+    static Phaser phaser = new Phaser(1);
 
     static List<String> phraseList;
     static int pos = 0;
@@ -37,10 +37,12 @@ public class main {
         frame.pauseGame("The game is paused while waiting to start. Press resume to start.");
         frame.switchTeam(1);
 
-        barrier.await();
+        phaser.register();
+        phaser.arriveAndAwaitAdvance();
+        phaser.arriveAndDeregister();
 
         frame.nextPhrase();
-        frame.startTimer(0, 5, 0);
+        frame.startTimer(1, 0, 0);
 
     }
 

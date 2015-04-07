@@ -6,8 +6,8 @@
 package app;
 
 import java.awt.Color;
+import java.util.Collections;
 import java.util.Random;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -22,7 +22,7 @@ public class GameFrame extends javax.swing.JFrame {
      * Creates new form GameFrame
      */
     int t1PointsInt = 0;
-    int t2PintsInt = 0;
+    int t2PointsInt = 0;
     int activeTeam = 1;
 
     long lastNextPhrase = System.currentTimeMillis();
@@ -189,19 +189,59 @@ public class GameFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
-        EditDialog dialog = new EditDialog(this, true, t1Name.getText(), t2Name.getText(), t1Points.getText().substring(0, t1Points.getText().indexOf("points") - 1), t2Points.getText().substring(0, t2Points.getText().indexOf("points") - 1));
 
-        dialog.setLocationRelativeTo(this);
-        dialog.setTitle("Edit");
+        if (timerThread != null && !timerThread.paused) {
 
-        dialog.setVisible(true);
+            pauseGame("Game is paused while editing. Press resume when ready to continue");
 
-        if (dialog.submitted) {
-            t1Name.setText(dialog.t1NameString);
-            t2Name.setText(dialog.t2NameString);
+            EditDialog dialog = new EditDialog(this, true, t1Name.getText(), t2Name.getText(), t1PointsInt, t2PointsInt);
 
-            t1Points.setText(dialog.t1PointsString + " points");
-            t2Points.setText(dialog.t2PointsString + " points");
+            dialog.setLocationRelativeTo(this);
+            dialog.setTitle("Edit");
+
+            dialog.setVisible(true);
+
+            if (dialog.submitted) {
+                t1Name.setText(dialog.t1NameString);
+                t2Name.setText(dialog.t2NameString);
+
+                t1PointsInt = dialog.t1PointsInt;
+                t2PointsInt = dialog.t2PointsInt;
+
+                updateScores();
+            }
+
+            new Thread() {
+
+                @Override
+                public void run() {
+
+                    main.phaser.register();
+                    main.phaser.arriveAndAwaitAdvance();
+                    main.phaser.arriveAndDeregister();
+
+                    phrase.setText(main.phraseList.get(main.pos - 1));
+                }
+            }.start();
+
+        } else {
+
+            EditDialog dialog = new EditDialog(this, true, t1Name.getText(), t2Name.getText(), t1PointsInt, t2PointsInt);
+
+            dialog.setLocationRelativeTo(this);
+            dialog.setTitle("Edit");
+
+            dialog.setVisible(true);
+
+            if (dialog.submitted) {
+                t1Name.setText(dialog.t1NameString);
+                t2Name.setText(dialog.t2NameString);
+
+                t1PointsInt = dialog.t1PointsInt;
+                t2PointsInt = dialog.t2PointsInt;
+
+                updateScores();
+            }
         }
     }//GEN-LAST:event_editBtnActionPerformed
 
@@ -213,11 +253,7 @@ public class GameFrame extends javax.swing.JFrame {
 
         }
 
-        try {
-            main.barrier.await();
-        } catch (InterruptedException | BrokenBarrierException ex) {
-            Logger.getLogger(GameFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        main.phaser.arrive();
 
         resumeBtn.setVisible(false);
 
@@ -232,8 +268,33 @@ public class GameFrame extends javax.swing.JFrame {
 
             lastNextPhrase = System.currentTimeMillis();
 
-            if (!nextPhrase()) {
+            if (activeTeam == 1) {
+                t1PointsInt++;
+            } else {
+                t2PointsInt++;
+            }
 
+            updateScores();
+
+            if (!nextPhrase()) {
+                pauseGame("You have reached the end of the list. Press resume when ready to move to the next stage");
+
+                Collections.shuffle(main.phraseList);
+                main.pos = 0;
+
+                new Thread() {
+
+                    @Override
+                    public void run() {
+
+                        main.phaser.register();
+                        main.phaser.arriveAndAwaitAdvance();
+                        main.phaser.arriveAndDeregister();
+
+                        nextPhrase();
+
+                    }
+                }.start();
             }
 
         }
@@ -288,6 +349,13 @@ public class GameFrame extends javax.swing.JFrame {
 
     }
 
+    public void updateScores() {
+
+        t1Points.setText(String.valueOf(t1PointsInt) + " points");
+        t2Points.setText(String.valueOf(t2PointsInt) + " points");
+
+    }
+
     public boolean nextPhrase() {
 
         if (main.pos < main.phraseList.size()) {
@@ -311,7 +379,7 @@ public class GameFrame extends javax.swing.JFrame {
 
     }
 
-    private class TimerThread extends Thread {
+    public class TimerThread extends Thread {
 
         long timeDuration;
         long lastTime;
@@ -329,7 +397,7 @@ public class GameFrame extends javax.swing.JFrame {
 
             lastTime = System.currentTimeMillis();
 
-            do {
+            while (true) {
 
                 if (!paused) {
 
@@ -345,42 +413,39 @@ public class GameFrame extends javax.swing.JFrame {
 
                 } else {
 
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(GameFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    main.phaser.register();
+                    main.phaser.arriveAndAwaitAdvance();
+                    main.phaser.arriveAndDeregister();
 
                     lastTime = System.currentTimeMillis() - (timeDuration - timeRemain);
                 }
 
-            } while (timeRemain > 0);
+                if (timeRemain < 0) {
 
-            pauseGame("Time is up! Switch teams and press resume to continue");
-            switchTeam();
+                    pauseGame("Time is up! Switch teams and press resume to continue");
+                    switchTeam();
 
-            try {
-                main.barrier.await();
-            } catch (InterruptedException | BrokenBarrierException ex) {
-                Logger.getLogger(GameFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    main.phaser.register();
+                    main.phaser.arriveAndAwaitAdvance();
+                    main.phaser.arriveAndDeregister();
+
+                    Random rnd = new Random();
+
+                    String tempPhrase = main.phraseList.get(main.pos - 1);
+
+                    int newPos = rnd.nextInt(main.phraseList.size() - (main.pos - 1));
+
+                    main.phraseList.set(main.pos - 1, main.phraseList.get(newPos + main.pos - 1));
+                    main.phraseList.set(newPos + main.pos - 1, tempPhrase);
+
+                    phrase.setText(main.phraseList.get(main.pos - 1));
+
+                    lastTime = System.currentTimeMillis();
+                }
             }
-
-            Random rnd = new Random();
-
-            String tempPhrase = main.phraseList.get(main.pos - 1);
-
-            int newPos = rnd.nextInt(main.phraseList.size() - (main.pos - 1));
-
-            main.phraseList.set(main.pos - 1, main.phraseList.get(newPos + main.pos - 1));
-            main.phraseList.set(newPos + main.pos - 1, tempPhrase);
-
-            phrase.setText(main.phraseList.get(main.pos - 1));
-
-            startTimer(1, 0, 0);
-
         }
 
-        private void updateTime() {
+        public void updateTime() {
 
             String minutes = String.valueOf(timeRemain / (1000 * 60));
             String seconds = String.valueOf(timeRemain % (1000 * 60) / 1000);
@@ -410,9 +475,9 @@ public class GameFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea phrase;
     private javax.swing.JButton resumeBtn;
-    private javax.swing.JLabel t1Name;
+    public javax.swing.JLabel t1Name;
     private javax.swing.JLabel t1Points;
-    private javax.swing.JLabel t2Name;
+    public javax.swing.JLabel t2Name;
     private javax.swing.JLabel t2Points;
     private javax.swing.JLabel timer;
     // End of variables declaration//GEN-END:variables

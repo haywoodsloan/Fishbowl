@@ -5,6 +5,8 @@
  */
 package app;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author haywoosd
@@ -18,18 +20,21 @@ public class EditDialog extends javax.swing.JDialog {
     String t1NameString;
     String t2NameString;
 
-    String t1PointsString;
-    String t2PointsString;
+    int t1PointsInt;
+    int t2PointsInt;
+    
+    GameFrame frame;
 
-    public EditDialog(java.awt.Frame parent, boolean modal, String t1Name, String t2Name, String t1Points, String t2Points) {
+    public EditDialog(GameFrame parent, boolean modal, String t1Name, String t2Name, int t1Points, int t2Points) {
         super(parent, modal);
-        
+        frame = parent;
+
         t1NameString = t1Name;
         t2NameString = t2Name;
-        
-        t1PointsString = t1Points;
-        t2PointsString = t2Points;
-        
+
+        t1PointsInt = t1Points;
+        t2PointsInt = t2Points;
+
         initComponents();
     }
 
@@ -50,6 +55,7 @@ public class EditDialog extends javax.swing.JDialog {
         t2Name = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         t2Points = new javax.swing.JTextField();
+        resetBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -71,15 +77,22 @@ public class EditDialog extends javax.swing.JDialog {
 
         jLabel1.setText("points:");
 
-        t1Points.setText(t1PointsString);
+        t1Points.setText(String.valueOf(t1PointsInt));
         t1Points.setMaximumSize(new java.awt.Dimension(25, 25));
 
         t2Name.setText(t2NameString);
 
         jLabel2.setText("points:");
 
-        t2Points.setText(t2PointsString);
+        t2Points.setText(String.valueOf(t2PointsInt));
         t2Points.setMaximumSize(new java.awt.Dimension(25, 25));
+
+        resetBtn.setText("Reset Round");
+        resetBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -89,15 +102,15 @@ public class EditDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 159, Short.MAX_VALUE)
                         .addComponent(submitBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelBtn)
-                        .addGap(0, 157, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(resetBtn))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(t1Name)
+                                .addComponent(t1Name, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel1))
                             .addGroup(layout.createSequentialGroup()
@@ -126,7 +139,8 @@ public class EditDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(submitBtn)
-                    .addComponent(cancelBtn))
+                    .addComponent(cancelBtn)
+                    .addComponent(resetBtn))
                 .addContainerGap())
         );
 
@@ -134,20 +148,31 @@ public class EditDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
-        submitted = true;
-        
-        t1NameString = t1Name.getText().trim();
-        t2NameString = t2Name.getText().trim();
-        
-        t1PointsString = t1Points.getText().trim();
-        t2PointsString = t2Points.getText().trim();
-        
-        setVisible(false);
+        try {
+            
+            submitted = true;
+
+            t1NameString = t1Name.getText().trim();
+            t2NameString = t2Name.getText().trim();
+
+            t1PointsInt = Integer.parseInt(t1Points.getText().trim());
+            t2PointsInt = Integer.parseInt(t2Points.getText().trim());
+
+            setVisible(false);
+            
+        } catch (NumberFormatException ex) {
+            
+            JOptionPane.showMessageDialog(this, "You have entered an invalid input for number of points.", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_submitBtnActionPerformed
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
         setVisible(false);
     }//GEN-LAST:event_cancelBtnActionPerformed
+
+    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
+        new ResetRoundDialog(frame, true).setVisible(true);
+    }//GEN-LAST:event_resetBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -157,6 +182,7 @@ public class EditDialog extends javax.swing.JDialog {
     private javax.swing.JButton cancelBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton resetBtn;
     private javax.swing.JButton submitBtn;
     private javax.swing.JTextField t1Name;
     private javax.swing.JTextField t1Points;
