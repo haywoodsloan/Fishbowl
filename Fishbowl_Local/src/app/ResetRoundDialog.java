@@ -21,15 +21,14 @@ public class ResetRoundDialog extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    GameFrame frame;
     DefaultComboBoxModel<String> usedPhraseList;
 
-    public ResetRoundDialog(GameFrame parent, boolean modal) {
+    public ResetRoundDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        frame = parent;
 
-        usedPhraseList = new DefaultComboBoxModel<>(main.phraseList.subList(0, main.pos).toArray(new String[1]));
+        usedPhraseList = new DefaultComboBoxModel<>((String[]) main.phraseList.subList(0, main.pos).toArray());
         usedPhraseList.insertElementAt("None Completed", 0);
+        usedPhraseList.setSelectedItem("None Completed");
 
         initComponents();
     }
@@ -64,10 +63,10 @@ public class ResetRoundDialog extends javax.swing.JDialog {
 
         teamButtonGroup.add(t1Radio);
         t1Radio.setSelected(true);
-        t1Radio.setText(frame.t1Name.getText());
+        t1Radio.setText(((GameFrame)getParent()).t1Name.getText());
 
         teamButtonGroup.add(t2Radio);
-        t2Radio.setText(frame.t2Name.getText());
+        t2Radio.setText(((GameFrame)getParent()).t1Name.getText());
 
         jLabel2.setText("Which team is up?");
 
@@ -163,6 +162,8 @@ public class ResetRoundDialog extends javax.swing.JDialog {
 
     private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
         try {
+
+            GameFrame frame = (GameFrame) getParent();
 
             frame.timerThread.timeRemain = Integer.parseInt(secondsInput.getText()) * 1000;
             frame.timerThread.updateTime();

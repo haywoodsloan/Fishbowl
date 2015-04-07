@@ -17,17 +17,15 @@ public class EditDialog extends javax.swing.JDialog {
      * Creates new form EditDialog
      */
     boolean submitted = false;
+    
     String t1NameString;
     String t2NameString;
 
     int t1PointsInt;
     int t2PointsInt;
     
-    GameFrame frame;
-
-    public EditDialog(GameFrame parent, boolean modal, String t1Name, String t2Name, int t1Points, int t2Points) {
+    public EditDialog(java.awt.Frame parent, boolean modal, String t1Name, String t2Name, int t1Points, int t2Points) {
         super(parent, modal);
-        frame = parent;
 
         t1NameString = t1Name;
         t2NameString = t2Name;
@@ -171,7 +169,10 @@ public class EditDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelBtnActionPerformed
 
     private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
-        new ResetRoundDialog(frame, true).setVisible(true);
+        ResetRoundDialog resetDialog = new ResetRoundDialog((GameFrame)getParent(), true);
+        
+        resetDialog.setLocationRelativeTo(this);
+        resetDialog.setVisible(true);
     }//GEN-LAST:event_resetBtnActionPerformed
 
     /**

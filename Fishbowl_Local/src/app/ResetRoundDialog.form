@@ -105,7 +105,7 @@
         </Property>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="frame.t1Name.getText()" type="code"/>
+          <Connection code="((GameFrame)getParent()).t1Name.getText()" type="code"/>
         </Property>
       </Properties>
     </Component>
@@ -115,7 +115,7 @@
           <ComponentRef name="teamButtonGroup"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="frame.t2Name.getText()" type="code"/>
+          <Connection code="((GameFrame)getParent()).t1Name.getText()" type="code"/>
         </Property>
       </Properties>
     </Component>
