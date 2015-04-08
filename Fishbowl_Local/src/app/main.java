@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.Phaser;
+import java.util.concurrent.CountDownLatch;
 
 /**
  *
@@ -19,7 +19,7 @@ import java.util.concurrent.Phaser;
  */
 public class main {
 
-    static Phaser phaser = new Phaser(1);
+    static CountDownLatch latch = new CountDownLatch(1);
 
     static List<String> phraseList;
     static int pos = 0;
@@ -37,9 +37,7 @@ public class main {
         frame.pauseGame("The game is paused while waiting to start. Press resume to start.");
         frame.switchTeam(1);
 
-        phaser.register();
-        phaser.arriveAndAwaitAdvance();
-        phaser.arriveAndDeregister();
+        latch.await();
 
         frame.nextPhrase();
         frame.startTimer(1, 0, 0);

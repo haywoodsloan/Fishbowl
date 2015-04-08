@@ -8,6 +8,7 @@ package app;
 import java.awt.Color;
 import java.util.Collections;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -216,9 +217,11 @@ public class GameFrame extends javax.swing.JFrame {
                 @Override
                 public void run() {
 
-                    main.phaser.register();
-                    main.phaser.arriveAndAwaitAdvance();
-                    main.phaser.arriveAndDeregister();
+                    try {
+                        main.latch.await();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GameFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                     phrase.setText(main.phraseList.get(main.pos - 1));
                 }
@@ -248,19 +251,17 @@ public class GameFrame extends javax.swing.JFrame {
     private void resumeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resumeBtnActionPerformed
 
         if (timerThread != null) {
-
             timerThread.paused = false;
-
         }
 
-        main.phaser.arrive();
+        main.latch.countDown();
+        main.latch = new CountDownLatch(1);
 
         resumeBtn.setVisible(false);
 
         phrase.setForeground(Color.black);
 
         requestFocus();
-
     }//GEN-LAST:event_resumeBtnActionPerformed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
@@ -287,9 +288,11 @@ public class GameFrame extends javax.swing.JFrame {
                     @Override
                     public void run() {
 
-                        main.phaser.register();
-                        main.phaser.arriveAndAwaitAdvance();
-                        main.phaser.arriveAndDeregister();
+                        try {
+                            main.latch.await();
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(GameFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
                         nextPhrase();
 
@@ -303,13 +306,9 @@ public class GameFrame extends javax.swing.JFrame {
     public void switchTeam() {
 
         if (activeTeam == 1) {
-
             switchTeam(2);
-
         } else {
-
             switchTeam(1);
-
         }
 
     }
@@ -317,7 +316,6 @@ public class GameFrame extends javax.swing.JFrame {
     public void switchTeam(int team) {
 
         if (team == 1) {
-
             t2Name.setForeground(Color.LIGHT_GRAY);
             t2Points.setForeground(Color.LIGHT_GRAY);
 
@@ -326,7 +324,6 @@ public class GameFrame extends javax.swing.JFrame {
 
             activeTeam = 1;
         } else if (team == 2) {
-
             t1Name.setForeground(Color.LIGHT_GRAY);
             t1Points.setForeground(Color.LIGHT_GRAY);
 
@@ -344,7 +341,7 @@ public class GameFrame extends javax.swing.JFrame {
         resumeBtn.setVisible(true);
 
         if (timerThread != null) {
-            timerThread.paused = true;
+            timerThread.pauseTimer();
         }
 
     }
@@ -359,17 +356,14 @@ public class GameFrame extends javax.swing.JFrame {
     public boolean nextPhrase() {
 
         if (main.pos < main.phraseList.size()) {
-
             phrase.setText(main.phraseList.get(main.pos));
             main.pos++;
 
             return true;
-
         } else {
-
             main.pos = 0;
+            
             return false;
-
         }
     }
 
@@ -386,6 +380,8 @@ public class GameFrame extends javax.swing.JFrame {
         long timeRemain;
 
         boolean paused = false;
+
+        CountDownLatch timerLatch;
 
         TimerThread(int minute, int second, int milisecond) {
             timeDuration = minute * 1000 * 60 + second * 1000 + milisecond;
@@ -413,9 +409,11 @@ public class GameFrame extends javax.swing.JFrame {
 
                 } else {
 
-                    main.phaser.register();
-                    main.phaser.arriveAndAwaitAdvance();
-                    main.phaser.arriveAndDeregister();
+                    try {
+                        timerLatch.await();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GameFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                     lastTime = System.currentTimeMillis() - (timeDuration - timeRemain);
                 }
@@ -425,9 +423,11 @@ public class GameFrame extends javax.swing.JFrame {
                     pauseGame("Time is up! Switch teams and press resume to continue");
                     switchTeam();
 
-                    main.phaser.register();
-                    main.phaser.arriveAndAwaitAdvance();
-                    main.phaser.arriveAndDeregister();
+                    try {
+                        timerLatch.await();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GameFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                     Random rnd = new Random();
 
@@ -443,6 +443,13 @@ public class GameFrame extends javax.swing.JFrame {
                     lastTime = System.currentTimeMillis();
                 }
             }
+        }
+
+        public void pauseTimer() {
+
+            paused = true;
+
+            timerLatch = main.latch;
         }
 
         public void updateTime() {
