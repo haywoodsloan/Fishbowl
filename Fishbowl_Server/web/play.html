@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Fishbowl!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="play.css">
+    </head>
+    <body>
+        <div id = "timer" class = "topcorner">1:00:00</div>
+
+        <div id ="phrase" class ="mainDisplay">Click the screen to continue</div>
+
+        <footer>
+            <div id ="t1NameLabel" class ="t1NameLabel"><u>Team 1</u></div>
+            <div id ="t1PointsLabel" class ="t1PointsLabel">0 points</div>
+
+            <div id ="t2NameLabel" class ="t2NameLabel"><u>Team 2</u></div>
+            <div id ="t2PointsLabel" class ="t2PointsLabel">0 points</div>
+
+            <input id ="resumeBtn" type="submit" value="Resume"/>
+        </footer>
+
+        <script>
+
+            lastUpdateTime = 0;
+            timeRemain = 60000;
+
+            timerInv = null;
+
+            document.getElementById("resumeBtn").onclick = advancePhase;
+
+            tempXmlHttp = new XMLHttpRequest();
+            tempXmlHttp.open("GET", "GetEntryServlet", false);
+            tempXmlHttp.send();
+
+            tempResults = tempXmlHttp.responseText.split("\n");
+
+            updatePage(tempResults[0], tempResults[1], tempResults[2]);
+            timeRemain = tempResults[3];
+            document.getElementById("phrase").innerHTML = "Team " + tempResults[2] + " is up. Press resume to start.";
+
+            tempXmlHttp = null;
+            tempResults = null;
+
+            setTimerText(timeRemain);
+
+            function timerUpdate() {
+                timeRemain = 60000 - (Date.now() - lastUpdateTime);
+
+                if (timeRemain < 0) {
+                    clearInterval(timerInv);
+                    timeRemain = 60000;
+
+                    document.getElementById("phrase").style.color = "red";
+                    document.getElementById("phrase").innerHTML = "Time is up. Press resume or relaod the page to continue.";
+
+                    xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open("GET", "GetEntryServlet?timeUp=true&timeRemain=" + timeRemain, false);
+                    xmlHttp.send();
+
+                    results = xmlHttp.responseText.split("\n");
+                    updatePage(results[0], results[1], results[2]);
+
+                    document.getElementById("resumeBtn").style.visibility = "visible";
+                    window.onclick = null;
+                    document.getElementById("resumeBtn").onclick = advancePhase;
+
+                } else {
+
+                    xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open("GET", "GetEntryServlet?timeRemain=" + timeRemain, true);
+                    xmlHttp.send();
+
+                }
+
+                setTimerText(timeRemain);
+
+            }
+
+            function setTimerText(tempTime) {
+
+                minutes = Math.floor(tempTime / 60000).toString();
+                seconds = Math.floor(tempTime % 60000 / 1000).toString();
+                miliseconds = Math.floor(tempTime % 60000 % 1000 * 60 / 1000).toString();
+
+                if (seconds.length < 2) {
+                    seconds = "0" + seconds;
+                }
+
+                if (miliseconds.length < 2) {
+                    miliseconds = "0" + miliseconds;
+                }
+
+                if (minutes < 1) {
+                    document.getElementById("timer").innerHTML = seconds + ":" + miliseconds;
+                } else {
+                    document.getElementById("timer").innerHTML = minutes + ":" + seconds + ":" + miliseconds;
+                }
+
+            }
+
+            function nextPhrase(increasePoint) {
+
+                xmlHttp = new XMLHttpRequest();
+
+                xmlHttp.open("POST", "GetEntryServlet", false);
+                xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlHttp.send("increasePoints=" + increasePoint);
+
+                results = xmlHttp.responseText.split("\n");
+
+                if (results[0].indexOf("&&!!**$$") !== -1) {
+                    clearInterval(timerInv);
+
+                    document.getElementById("phrase").style.color = "red";
+                    document.getElementById("phrase").innerHTML = "You have reached the end of the list. Press resume to move to the next phase.";
+
+                    document.getElementById("resumeBtn").style.visibility = "visible";
+                    window.onclick = null;
+                    document.getElementById("resumeBtn").onclick = advancePhase;
+
+                } else {
+                    document.getElementById("phrase").innerHTML = results[0];
+                }
+
+                updatePage(results[1], results[2], results[3]);
+
+
+            }
+
+            function advancePhase() {
+                lastUpdateTime = Date.now() - (60000 - timeRemain);
+                timerInv = window.setInterval(timerUpdate, 50);
+
+                window.setTimeout(function () {
+                    window.onclick = function () {
+                        nextPhrase(true);
+                    };
+                }, 250);
+
+                nextPhrase(false);
+
+                document.getElementById("phrase").style.color = "black";
+                document.getElementById("resumeBtn").style.visibility = "hidden";
+            }
+
+            function updatePage(t1Points, t2Points, activeTeam) {
+                document.getElementById("t1PointsLabel").innerHTML = t1Points + " points";
+                document.getElementById("t2PointsLabel").innerHTML = t2Points + " points";
+
+                if (parseInt(activeTeam) === 1) {
+                    document.getElementById("t1NameLabel").style.color = "black";
+                    document.getElementById("t1PointsLabel").style.color = "black";
+
+                    document.getElementById("t2NameLabel").style.color = "grey";
+                    document.getElementById("t2PointsLabel").style.color = "grey";
+                } else {
+                    document.getElementById("t1NameLabel").style.color = "grey";
+                    document.getElementById("t1PointsLabel").style.color = "grey";
+
+                    document.getElementById("t2NameLabel").style.color = "black";
+                    document.getElementById("t2PointsLabel").style.color = "black";
+                }
+            }
+        </script>
+    </body>
+</html>

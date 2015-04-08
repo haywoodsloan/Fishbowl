@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
 <html>
     <head>
         <title>Fishbowl!</title>
@@ -8,22 +12,14 @@
         <link rel="stylesheet" href="index.css">
     </head>
     <body>
-         
-        <header>Submit your entries below:</header>
-
-        <form name="entryForm" action="addEntries" method="POST" autocomplete="off">
-            
-            <input type="text" name="entry1" value="" size="20" /><br>
-            <input type="text" name="entry2" value="" size="20" /><br>
-            <input type="text" name="entry3" value="" size="20" /><br>
-            <input type="text" name="entry4" value="" size="20" /><br>
-            <input type="text" name="entry5" value="" size="20" /><br>
-            
-            <input type="hidden" name ="numEntries" value ="5"/>
-            
-            <input type="submit" value="Submit" />
-            
+        
+        <form method = "GET" name="moveToEntries" action="entries.html">
+            <input type="submit" value="Add Entries" />
         </form>
-
+        <br>
+        <form method = "GET" name="playGame" action="play.html">
+            <input type="submit" value="Play Game" />
+        </form>
+        
     </body>
 </html>

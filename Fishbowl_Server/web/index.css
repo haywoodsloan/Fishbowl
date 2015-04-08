@@ -1,8 +1,13 @@
-input{
-    margin-bottom: 10px;
-}
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 7, 2015, 12:45:18 PM
+    Author     : haywoosd
+*/
 
-header{
-    font-size: 20px;
-    margin-bottom: 10px;
+input{
+    width: 80px;
 }

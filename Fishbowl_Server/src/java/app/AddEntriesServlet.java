@@ -100,6 +100,7 @@ public class AddEntriesServlet extends HttpServlet {
         File entriesFile = new File(System.getProperty("user.home") + "\\desktop\\Fishbowl Entries.txt");
 
         try (FileWriter entryWriter = new FileWriter(entriesFile, true)) {
+
             String tempEntry;
 
             for (int i = 1; i < numEntries + 1; i++) {
@@ -120,9 +121,11 @@ public class AddEntriesServlet extends HttpServlet {
                 }
 
             }
-        }
+            processRequest(request, response, failed, numMissing);
 
-        processRequest(request, response, failed, numMissing);
+        } catch (IOException ex) {
+            doPost(request, response);
+        }
     }
 
     /**

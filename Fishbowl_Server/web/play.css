@@ -1,0 +1,128 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 7, 2015, 1:07:03 PM
+    Author     : haywoosd
+*/
+
+input{
+    position: absolute;
+
+    bottom: 0;
+    left: 50%;
+
+    font-size: 15px;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.topcorner {
+    position: absolute;
+
+    top:0;
+    right:5px;
+
+    font-size: 25px;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.mainDisplay {
+    position: absolute;
+
+    top: 25%;
+    left: 0%;
+        
+    font-size: 50px;
+    color: red;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.t1NameLabel {
+    position: absolute;
+
+    bottom: 0;
+    left: 5px;
+
+    margin-bottom: 20px;
+
+    font-size: 20px;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.t1PointsLabel {
+    position: absolute;
+
+    bottom: 0;
+    left: 5px;
+
+    font-size: 20px;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.t2NameLabel {
+    position: absolute;
+
+    bottom: 0;
+    right: 5px;
+
+    margin-bottom: 20px;
+
+    font-size: 20px;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.t2PointsLabel {
+    position: absolute;
+
+    bottom: 0;
+    right: 5px;
+
+    font-size: 20px;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
