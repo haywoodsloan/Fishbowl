@@ -30,13 +30,7 @@
             </div>
         </div>
         <script>
-
-            lastUpdateTime = 0;
-            timeRemain = 60000;
-
             timerInv = null;
-
-            document.getElementById("resumeBtn").onclick = advancePhase;
 
             tempXmlHttp = new XMLHttpRequest();
             tempXmlHttp.open("GET", "GetEntryServlet", false);
@@ -53,33 +47,31 @@
 
             setTimerText(timeRemain);
 
-            function timerUpdate() {
-                timeRemain = 60000 - (Date.now() - lastUpdateTime);
+            if (timeRemain < 60000 && timeRemain > 0) {
+                advancePhase();
+            } else {
+                document.getElementById("resumeBtn").onclick = advancePhase;
+            }
 
-                if (timeRemain < 0) {
+            function timerUpdate() {
+
+                xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", "GetEntryServlet", false);
+                xmlHttp.send();
+
+                results = xmlHttp.responseText.split("\n");
+                updatePage(results[0], results[1], results[2]);
+                timeRemain = results[3];
+
+                if (timeRemain <= 0) {
                     clearInterval(timerInv);
-                    timeRemain = 60000;
 
                     document.getElementById("phrase").style.color = "red";
                     document.getElementById("phrase").innerHTML = "Time is up. Press resume or relaod the page to continue.";
 
-                    xmlHttp = new XMLHttpRequest();
-                    xmlHttp.open("GET", "GetEntryServlet?timeUp=true&timeRemain=" + timeRemain, false);
-                    xmlHttp.send();
-
-                    results = xmlHttp.responseText.split("\n");
-                    updatePage(results[0], results[1], results[2]);
-
                     document.getElementById("resumeBtn").style.visibility = "visible";
                     window.onclick = null;
                     document.getElementById("resumeBtn").onclick = advancePhase;
-
-                } else {
-
-                    xmlHttp = new XMLHttpRequest();
-                    xmlHttp.open("GET", "GetEntryServlet?timeRemain=" + timeRemain, true);
-                    xmlHttp.send();
-
                 }
 
                 setTimerText(timeRemain);
@@ -87,6 +79,10 @@
             }
 
             function setTimerText(tempTime) {
+                
+                if(tempTime <= 0){
+                    tempTime = 60000;
+                }
 
                 minutes = Math.floor(tempTime / 60000).toString();
                 seconds = Math.floor(tempTime % 60000 / 1000).toString();
@@ -138,16 +134,16 @@
             }
 
             function advancePhase() {
-                lastUpdateTime = Date.now() - (60000 - timeRemain);
-                timerInv = window.setInterval(timerUpdate, 50);
 
                 window.setTimeout(function () {
                     window.onclick = function () {
                         nextPhrase(true);
                     };
-                }, 250);
+                }, 25);
 
                 nextPhrase(false);
+
+                timerInv = window.setInterval(timerUpdate, 100);
 
                 document.getElementById("phrase").style.color = "black";
                 document.getElementById("resumeBtn").style.visibility = "hidden";

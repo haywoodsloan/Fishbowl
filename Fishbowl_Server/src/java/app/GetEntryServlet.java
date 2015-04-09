@@ -40,7 +40,11 @@ public class GetEntryServlet extends HttpServlet {
     static int t1Points = 0;
     static int t2Points = 0;
     static int activeTeam = 1;
-    static int timeRemain = 60000;
+
+    static long lastUpdateTime;
+    static long timeRemain = 60000;
+
+    static boolean paused = true;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, boolean post)
             throws ServletException, IOException {
@@ -50,7 +54,6 @@ public class GetEntryServlet extends HttpServlet {
             if (post) {
 
                 if (pos < phraseList.size()) {
-                    System.out.println(pos);
                     out.println(phraseList.get(pos));
 
                     pos++;
@@ -59,6 +62,8 @@ public class GetEntryServlet extends HttpServlet {
 
                     pos = 0;
                     Collections.shuffle(phraseList);
+
+                    paused = true;
                 }
 
                 out.println(t1Points);
@@ -90,8 +95,9 @@ public class GetEntryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        if ("true".equals(request.getParameter("timeUp"))) {
+        updateTime();
 
+        if (timeRemain < 0) {
             pos--;
             activeTeam = activeTeam % 2 + 1;
 
@@ -102,13 +108,16 @@ public class GetEntryServlet extends HttpServlet {
 
             phraseList.set(pos, phraseList.get(tempPos + pos));
             phraseList.set(tempPos + pos, tempPhrase);
-        }
 
-        if (request.getParameter("timeRemain") != null) {
-            timeRemain = Integer.parseInt(request.getParameter("timeRemain"));
-        }
+            timeRemain = 0;
 
-        processRequest(request, response, false);
+            processRequest(request, response, false);
+
+            timeRemain = 60000;
+
+        } else {
+            processRequest(request, response, false);
+        }
     }
 
     /**
@@ -130,15 +139,35 @@ public class GetEntryServlet extends HttpServlet {
 
         if (request.getParameter("increasePoints").equals("true")) {
 
-            if (activeTeam == 1) {
+            if (activeTeam == 1 && !paused) {
                 t1Points++;
-            } else {
+            } else if (!paused) {
                 t2Points++;
             }
 
+        } else {
+
+            if (paused) {
+                paused = false;
+                lastUpdateTime = System.currentTimeMillis() - (60000 - timeRemain);
+
+            } else {
+                pos--;
+
+            }
         }
 
         processRequest(request, response, true);
+    }
+
+    void updateTime() {
+        if (!paused) {
+            timeRemain = 60000 - (System.currentTimeMillis() - lastUpdateTime);
+
+            if (timeRemain < 0) {
+                paused = true;
+            }
+        }
     }
 
     /**
