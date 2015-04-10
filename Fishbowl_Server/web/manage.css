@@ -1,0 +1,32 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 9, 2015, 8:14:38 PM
+    Author     : haywoosd
+*/
+
+
+.scoreInput {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.pauseButton{
+    width: 70px;
+}
+
+.teamUpdateForm{
+    display: flex;
+    
+    align-items:center;
+}
+
+.teamSelect{
+    
+    margin-left:10px;
+    margin-right:10px;
+    
+}

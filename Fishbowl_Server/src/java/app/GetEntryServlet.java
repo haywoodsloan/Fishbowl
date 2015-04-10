@@ -52,18 +52,21 @@ public class GetEntryServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             if (post) {
+                
+                if (!paused) {
+                    
+                    if (pos < phraseList.size()) {
+                        out.println(phraseList.get(pos));
 
-                if (pos < phraseList.size()) {
-                    out.println(phraseList.get(pos));
+                        pos++;
+                    } else {
+                        out.println("&&!!**$$");
 
-                    pos++;
-                } else {
-                    out.println("&&!!**$$");
+                        pos = 0;
+                        Collections.shuffle(phraseList);
 
-                    pos = 0;
-                    Collections.shuffle(phraseList);
-
-                    paused = true;
+                        paused = true;
+                    }
                 }
 
                 out.println(t1Points);
@@ -76,6 +79,7 @@ public class GetEntryServlet extends HttpServlet {
                 out.println(t2Points);
                 out.println(activeTeam);
                 out.println(timeRemain);
+                out.println(paused);
 
             }
 

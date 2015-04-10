@@ -42,16 +42,16 @@
             timeRemain = tempResults[3];
             document.getElementById("phrase").innerHTML = "Team " + tempResults[2] + " is up. Press resume to start.";
 
-            tempXmlHttp = null;
-            tempResults = null;
-
             setTimerText(timeRemain);
 
-            if (timeRemain < 60000 && timeRemain > 0) {
+            if (tempResults[4].indexOf("false") !== -1) {
                 advancePhase();
             } else {
                 document.getElementById("resumeBtn").onclick = advancePhase;
             }
+            
+            tempXmlHttp = null;
+            tempResults = null;
 
             function timerUpdate() {
 
@@ -63,13 +63,14 @@
                 updatePage(results[0], results[1], results[2]);
                 timeRemain = results[3];
 
-                if (timeRemain <= 0) {
+                if (results[4].indexOf("true") !== -1) {
                     clearInterval(timerInv);
 
                     document.getElementById("phrase").style.color = "red";
                     document.getElementById("phrase").innerHTML = "Time is up. Press resume or relaod the page to continue.";
 
                     document.getElementById("resumeBtn").style.visibility = "visible";
+                    
                     window.onclick = null;
                     document.getElementById("resumeBtn").onclick = advancePhase;
                 }

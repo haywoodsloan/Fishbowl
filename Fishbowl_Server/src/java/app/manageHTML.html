@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Manage Game</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="manage.css">
+
+    </head>
+    <body>
+
+        <form action="manage" name ="updateT1Score" method="POST">
+            Team 1 Score:<input type="text" name="t1Score" class="scoreInput" value="0" size="5" />
+            <input type="submit" value="Update" />
+            <input type="hidden" name="action" value="t1ScoreUpdate"/>
+        </form>
+
+        <br>
+
+        <form action="manage" name ="updateT2Score" method="POST">
+            Team 2 Score:<input type="text" name="t2Score" class="scoreInput" value="0" size="5" />
+            <input type="submit" value="Update" />
+            <input type="hidden" name="action" value="t2ScoreUpdate" />
+        </form>
+
+        <br>
+
+        <form action="manage" name="updateTeam" method="POST" class="teamUpdateForm">
+            Which Team is up:
+            
+            <span class="teamSelect">
+                <label for="team1">Team 1</label>
+                <input type="radio" id="team1" name="teamGroup" value="t1" checked="checked" />
+                
+                <br>
+
+                <label for="team2">Team 2</label>
+                <input type="radio" name="teamGroup" id="team2" value="t2" />
+
+            </span>
+            
+            <input type="hidden" name="action" value="teamUpdate">
+            <input type="submit" value="Update" />
+        </form>
+
+        <br>
+
+        <form name="pause" action="manage" method="POST">
+            <input type="submit" value="Pause" name="action" class="pauseButton"/>
+        </form>
+
+        <br>
+
+        <form name="updateTimer" action="manage" method="POST">
+            How many seconds on the timer:<input type="text" name="secondsLeft" value="60" size="5" class="scoreInput"/>
+            <input type="submit" value="Update" />
+            <input type ="hidden" value="updateTimer" name="action"/>
+        </form>
+
+        <br>
