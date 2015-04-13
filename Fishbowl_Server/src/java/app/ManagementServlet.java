@@ -138,6 +138,12 @@ public class ManagementServlet extends HttpServlet {
                 GetEntryServlet.activeTeam = 2;
             }
 
+        } else if ("reloadList".equals(action)) {
+            
+            System.out.println("Reloading the phrase list");
+            
+            GetEntryServlet.loadList();
+            
         } else if ("modList".equals(action)) {
 
             System.out.println("Modifying the phrase list");

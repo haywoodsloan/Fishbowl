@@ -52,9 +52,9 @@ public class GetEntryServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             if (post) {
-                
+
                 if (!paused) {
-                    
+
                     if (pos < phraseList.size()) {
                         out.println(phraseList.get(pos));
 
@@ -137,8 +137,7 @@ public class GetEntryServlet extends HttpServlet {
             throws ServletException, IOException {
 
         if (phraseList == null) {
-            phraseList = Files.readAllLines(Paths.get(System.getProperty("user.home") + "\\desktop\\Fishbowl Entries.txt"));
-            Collections.shuffle(phraseList);
+            loadList();
         }
 
         if (request.getParameter("increasePoints").equals("true")) {
@@ -183,5 +182,10 @@ public class GetEntryServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    public static void loadList() throws IOException {
+        phraseList = Files.readAllLines(Paths.get(System.getProperty("user.home") + "\\desktop\\Fishbowl Entries.txt"));
+        Collections.shuffle(phraseList);
+    }
 
 }
