@@ -99,33 +99,30 @@ public class AddEntriesServlet extends HttpServlet {
 
         File entriesFile = new File(System.getProperty("user.home") + "\\desktop\\Fishbowl Entries.txt");
 
-        try (FileWriter entryWriter = new FileWriter(entriesFile, true)) {
+        synchronized (AddEntriesServlet.class) {
 
-            String tempEntry;
+            try (FileWriter entryWriter = new FileWriter(entriesFile, true)) {
+                String tempEntry;
 
-            for (int i = 1; i < numEntries + 1; i++) {
+                for (int i = 1; i < numEntries + 1; i++) {
 
-                tempEntry = request.getParameter("entry" + i).trim();
+                    tempEntry = request.getParameter("entry" + i).trim();
 
-                if (!tempEntry.equals("")) {
+                    if (!tempEntry.equals("")) {
+                        System.out.println("Adding entry: " + tempEntry + " to the Fishbowl file");
 
-                    System.out.println("Adding entry: " + tempEntry + " to the Fishbowl file");
-                    entryWriter.write(tempEntry);
-                    entryWriter.write(System.getProperty("line.separator"));
+                        entryWriter.write(tempEntry);
+                        entryWriter.write(System.getProperty("line.separator"));
 
-                } else {
+                    } else {
+                        failed = true;
+                        numMissing++;
 
-                    failed = true;
-                    numMissing++;
-
+                    }
                 }
-
             }
-            processRequest(request, response, failed, numMissing);
-
-        } catch (IOException ex) {
-            doPost(request, response);
         }
+        processRequest(request, response, failed, numMissing);
     }
 
     /**
