@@ -45,6 +45,7 @@ public class GetEntryServlet extends HttpServlet {
     static long timeRemain = 60000;
 
     static boolean paused = true;
+    static boolean randomize = false;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, boolean post)
             throws ServletException, IOException {
@@ -63,8 +64,8 @@ public class GetEntryServlet extends HttpServlet {
                         out.println("&&!!**$$");
 
                         pos = 0;
-                        Collections.shuffle(phraseList);
 
+                        randomize = true;
                         paused = true;
                     }
                 }
@@ -72,6 +73,7 @@ public class GetEntryServlet extends HttpServlet {
                 out.println(t1Points);
                 out.println(t2Points);
                 out.println(activeTeam);
+                out.println(paused);
 
             } else {
 
@@ -140,7 +142,38 @@ public class GetEntryServlet extends HttpServlet {
             loadList();
         }
 
-        if (request.getParameter("increasePoints").equals("true")) {
+        if (request.getParameter("decreasePoints") != null) {
+
+            if (pos > 1 && !paused) {
+
+                if (activeTeam == 1 && !paused) {
+                    t1Points--;
+                } else if (!paused) {
+                    t2Points--;
+                }
+
+                pos -= 2;
+
+            } else if (paused && timeRemain < 60000) {
+                
+                if (activeTeam == 1 && timeRemain < 60000) {
+                    t1Points--;
+                } else if (timeRemain < 60000) {
+                    t2Points--;
+                }
+
+                paused = false;
+                randomize = false;
+                
+                lastUpdateTime = System.currentTimeMillis() - (60000 - timeRemain);
+
+                pos = phraseList.size() - 1;
+                
+            } else if (!paused){
+                pos--;
+            }
+
+        } else if (request.getParameter("increasePoints").equals("true")) {
 
             if (activeTeam == 1 && !paused) {
                 t1Points++;
@@ -151,13 +184,19 @@ public class GetEntryServlet extends HttpServlet {
         } else {
 
             if (paused) {
+                
                 paused = false;
                 lastUpdateTime = System.currentTimeMillis() - (60000 - timeRemain);
-
             } else {
+                
                 pos--;
-
             }
+        }
+
+        if (randomize) {
+            Collections.shuffle(phraseList);
+            
+            randomize = false;
         }
 
         processRequest(request, response, true);

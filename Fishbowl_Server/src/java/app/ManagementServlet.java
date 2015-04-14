@@ -50,8 +50,8 @@ public class ManagementServlet extends HttpServlet {
                     out.println("<form name=\"modList\" action=\"manage\" method=\"POST\">");
                     out.println("What is the last phrase completed: <select name=\"selectedPhrase\" class=\"scoreInput\">");
 
-                    for (String phrase : GetEntryServlet.phraseList) {
-                        out.println("<option>" + phrase + "</option>");
+                    for (int i = 0; i < GetEntryServlet.phraseList.size(); i++) {
+                        out.println("<option>" + GetEntryServlet.phraseList.get(i) + "</option>");
                     }
 
                     out.println("</select>");
@@ -155,6 +155,9 @@ public class ManagementServlet extends HttpServlet {
                     Random rnd = new Random();
                     String tempPhrase;
                     int tempPos;
+                    
+                    GetEntryServlet.pos = i + 1;
+                    GetEntryServlet.randomize = false;
 
                     for (int i2 = i + 1; i2 < GetEntryServlet.phraseList.size(); i2++) {
                         tempPhrase = GetEntryServlet.phraseList.get(i2);
