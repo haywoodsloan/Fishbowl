@@ -107,68 +107,63 @@ public class ManagementServlet extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        if ("Pause".equals(action)) {
-
-            System.out.println("Pausing game");
-            GetEntryServlet.paused = true;
-            GetEntryServlet.pos--;
-
-        } else if ("updateTimer".equals(action)) {
-
-            System.out.println("Updating timer");
-            GetEntryServlet.timeRemain = 1000 * Integer.parseInt(request.getParameter("secondsLeft"));
-
-        } else if ("t1ScoreUpdate".equals(action)) {
-
-            System.out.println("Updating team 1's score");
-            GetEntryServlet.t1Points = Integer.parseInt(request.getParameter("t1Score"));
-
-        } else if ("t2ScoreUpdate".equals(action)) {
-
-            System.out.println("Updating team 2's score");
-            GetEntryServlet.t1Points = Integer.parseInt(request.getParameter("t2Score"));
-
-        } else if ("teamUpdate".equals(action)) {
-
-            System.out.println("Changing Teams");
-
-            if ("t1".equals(request.getParameter("teamGroup"))) {
-                GetEntryServlet.activeTeam = 1;
-            } else {
-                GetEntryServlet.activeTeam = 2;
-            }
-
-        } else if ("reloadList".equals(action)) {
-            
-            System.out.println("Reloading the phrase list");
-            
-            GetEntryServlet.loadList();
-            
-        } else if ("modList".equals(action)) {
-
-            System.out.println("Modifying the phrase list");
-
-            for (int i = 0; i < GetEntryServlet.phraseList.size(); i++) {
-
-                if (GetEntryServlet.phraseList.get(i).equals(request.getParameter("selectedPhrase"))) {
-
-                    Random rnd = new Random();
-                    String tempPhrase;
-                    int tempPos;
-                    
-                    GetEntryServlet.pos = i + 1;
-                    GetEntryServlet.randomize = false;
-
-                    for (int i2 = i + 1; i2 < GetEntryServlet.phraseList.size(); i2++) {
-                        tempPhrase = GetEntryServlet.phraseList.get(i2);
-                        tempPos = rnd.nextInt(GetEntryServlet.phraseList.size() - i2) + i2;
-
-                        GetEntryServlet.phraseList.set(i2, GetEntryServlet.phraseList.get(tempPos));
-                        GetEntryServlet.phraseList.set(tempPos, tempPhrase);
-                    }
-
+        if (null != action) {
+            switch (action) {
+                case "Pause":
+                    System.out.println("Pausing game");
+                    GetEntryServlet.paused = true;
+                    GetEntryServlet.pos--;
                     break;
-                }
+                case "updateTimer":
+                    System.out.println("Updating timer");
+                    GetEntryServlet.timeRemain = 1000 * Integer.parseInt(request.getParameter("secondsLeft"));
+                    break;
+                case "t1ScoreUpdate":
+                    System.out.println("Updating team 1's score");
+                    GetEntryServlet.t1Points = Integer.parseInt(request.getParameter("t1Score"));
+                    break;
+                case "t2ScoreUpdate":
+                    System.out.println("Updating team 2's score");
+                    GetEntryServlet.t1Points = Integer.parseInt(request.getParameter("t2Score"));
+                    break;
+                case "teamUpdate":
+                    System.out.println("Changing Teams");
+                    if ("t1".equals(request.getParameter("teamGroup"))) {
+                        GetEntryServlet.activeTeam = 1;
+                    } else {
+                        GetEntryServlet.activeTeam = 2;
+                    }
+                    break;
+                case "reloadList":
+                    System.out.println("Reloading the phrase list");
+                    GetEntryServlet.loadList();
+                    GetEntryServlet.pos = 0;
+                    break;
+                case "modList":
+                    System.out.println("Modifying the phrase list");
+                    for (int i = 0; i < GetEntryServlet.phraseList.size(); i++) {
+
+                        if (GetEntryServlet.phraseList.get(i).equals(request.getParameter("selectedPhrase"))) {
+
+                            Random rnd = new Random();
+                            String tempPhrase;
+                            int tempPos;
+
+                            GetEntryServlet.pos = i + 1;
+                            GetEntryServlet.randomize = false;
+
+                            for (int i2 = i + 1; i2 < GetEntryServlet.phraseList.size(); i2++) {
+                                tempPhrase = GetEntryServlet.phraseList.get(i2);
+                                tempPos = rnd.nextInt(GetEntryServlet.phraseList.size() - i2) + i2;
+
+                                GetEntryServlet.phraseList.set(i2, GetEntryServlet.phraseList.get(tempPos));
+                                GetEntryServlet.phraseList.set(tempPos, tempPhrase);
+                            }
+
+                            break;
+                        }
+                    }
+                    break;
             }
         }
 
