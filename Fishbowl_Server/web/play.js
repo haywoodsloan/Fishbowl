@@ -25,11 +25,11 @@ tempResults = null;
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 
     window.ontouchstart = function (event) {
-        touchStartLocation = event.touches[0].clientX;
+        touchStartLocation = event.touches[0];
     };
 
     window.ontouchend = function (event) {
-        if (((event.changedTouches[0].clientX - touchStartLocation) / screen.width) > 0.15) {
+        if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.15) {
             lastPhrase();
         }
     };
@@ -56,6 +56,8 @@ function timerUpdate() {
     if (results[4].indexOf("true") !== -1) {
         clearInterval(timerInv);
         timerInv = null;
+        
+        document.getElementById("bell").play();
 
         document.getElementById("phrase").style.color = "red";
         document.getElementById("phrase").innerHTML = "Time is up. Press resume or reload the page to continue.";
@@ -190,12 +192,15 @@ function setClick(enabled) {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             window.ontouchend = function (event) {
 
-                if (((event.changedTouches[0].clientX - touchStartLocation) / screen.width) > 0.15) {
+                if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.15) {
                     lastPhrase();
-                } else {
+                } else if (Math.abs((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) < 0.01
+                        && Math.abs((event.changedTouches[0].clientY - touchStartLocation.clientY) / screen.height) < 0.01) {
                     nextPhrase(true);
                 }
+                
             };
+            
         } else {
 
             window.onclick = function () {
@@ -208,11 +213,12 @@ function setClick(enabled) {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             window.ontouchend = function (event) {
 
-                if (((event.changedTouches[0].clientX - touchStartLocation) / screen.width) > 0.15) {
+                if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.15) {
                     lastPhrase();
                 }
 
             };
+            
         } else {
             window.onclick = null;
         }

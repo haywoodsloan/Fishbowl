@@ -49,7 +49,8 @@ input{
 
     font-size: 50px;
     color: red;
-    
+    word-wrap: break-word;
+
     display: flex;
     align-items: center;
     justify-content: center;
