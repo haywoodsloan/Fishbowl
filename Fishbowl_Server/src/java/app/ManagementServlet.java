@@ -72,22 +72,23 @@ public class ManagementServlet extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        if (null != action) {
+        if (null != action
+                && ("127.0.0.1".equals(request.getRemoteAddr()) || "0:0:0:0:0:0:0:1".equals(request.getRemoteAddr()))) {
             switch (action) {
                 case "restartGame":
                     System.out.println("Restarting the game");
-                    
+
                     GetEntryServlet.t1Points = 0;
                     GetEntryServlet.t2Points = 0;
-                    
+
                     GetEntryServlet.paused = true;
                     GetEntryServlet.timeRemain = 60000;
-                    
+
                     GetEntryServlet.activeTeam = 1;
-                    
+
                     GetEntryServlet.phraseList = null;
                     GetEntryServlet.pos = 0;
-                    
+
                     AddEntriesServlet.entryList.clear();
                     break;
                 case "Pause":

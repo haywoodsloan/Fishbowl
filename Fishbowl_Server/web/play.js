@@ -1,5 +1,7 @@
 var timerInv = null;
 var touchStartLocation;
+var audio = new Audio('bell.mp3');
+var doneUpdating = true;
 
 tempXmlHttp = new XMLHttpRequest();
 tempXmlHttp.open("GET", "GetEntryServlet", false);
@@ -16,11 +18,15 @@ setTimerText(timeRemain);
 if (tempResults[4].indexOf("false") !== -1) {
     advancePhase();
 } else {
-    document.getElementById("resumeBtn").onclick = advancePhase;
+    document.getElementById("resumeBtn").onclick = function () {
+        advancePhase();
+        audio.load();
+        audio.volume = 1.0;
+    };
 }
 
-tempXmlHttp = null;
-tempResults = null;
+delete tempXmlHttp;
+delete tempResults;
 
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 
@@ -43,32 +49,40 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
     };
 
 }
+
 function timerUpdate() {
 
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", "GetEntryServlet", false);
-    xmlHttp.send();
+    if (doneUpdating) {
 
-    results = xmlHttp.responseText.split("\n");
-    updatePage(results[0], results[1], results[2]);
-    timeRemain = results[3];
+        doneUpdating = false;
 
-    if (results[4].indexOf("true") !== -1) {
-        clearInterval(timerInv);
-        timerInv = null;
-        
-        document.getElementById("bell").play();
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "GetEntryServlet", false);
+        xmlHttp.send();
 
-        document.getElementById("phrase").style.color = "red";
-        document.getElementById("phrase").innerHTML = "Time is up. Press resume or reload the page to continue.";
+        results = xmlHttp.responseText.split("\n");
+        updatePage(results[0], results[1], results[2]);
+        timeRemain = results[3];
 
-        document.getElementById("resumeBtn").style.visibility = "visible";
+        if (results[4].indexOf("true") !== -1) {
+            clearInterval(timerInv);
+            timerInv = null;
 
-        setClick(false);
-        document.getElementById("resumeBtn").onclick = advancePhase;
+            audio.play();
+
+            document.getElementById("phrase").style.color = "red";
+            document.getElementById("phrase").innerHTML = "Time is up. Press resume or reload the page to continue.";
+
+            document.getElementById("resumeBtn").style.visibility = "visible";
+
+            setClick(false);
+            document.getElementById("resumeBtn").onclick = advancePhase;
+        }
+
+        setTimerText(timeRemain);
+
+        doneUpdating = true;
     }
-
-    setTimerText(timeRemain);
 
 }
 
@@ -144,6 +158,7 @@ function lastPhrase() {
         if (timerInv === null) {
             timerInv = window.setInterval(timerUpdate, 100);
         }
+
         window.setTimeout(function () {
             setClick(true);
         }, 25);
@@ -198,9 +213,9 @@ function setClick(enabled) {
                         && Math.abs((event.changedTouches[0].clientY - touchStartLocation.clientY) / screen.height) < 0.01) {
                     nextPhrase(true);
                 }
-                
+
             };
-            
+
         } else {
 
             window.onclick = function () {
@@ -218,7 +233,7 @@ function setClick(enabled) {
                 }
 
             };
-            
+
         } else {
             window.onclick = null;
         }
