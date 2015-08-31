@@ -11,10 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author haywoosd
- */
 @WebServlet(name = "manage", urlPatterns = {"/manage"})
 public class ManagementServlet extends HttpServlet {
 
@@ -78,6 +74,22 @@ public class ManagementServlet extends HttpServlet {
 
         if (null != action) {
             switch (action) {
+                case "restartGame":
+                    System.out.println("Restarting the game");
+                    
+                    GetEntryServlet.t1Points = 0;
+                    GetEntryServlet.t2Points = 0;
+                    
+                    GetEntryServlet.paused = true;
+                    GetEntryServlet.timeRemain = 60000;
+                    
+                    GetEntryServlet.activeTeam = 1;
+                    
+                    GetEntryServlet.phraseList = null;
+                    GetEntryServlet.pos = 0;
+                    
+                    AddEntriesServlet.entryList.clear();
+                    break;
                 case "Pause":
                     System.out.println("Pausing game");
                     GetEntryServlet.paused = true;
@@ -102,6 +114,10 @@ public class ManagementServlet extends HttpServlet {
                     } else {
                         GetEntryServlet.activeTeam = 2;
                     }
+                    break;
+                case "clearEntries":
+                    System.out.println("Clearing all entries");
+                    AddEntriesServlet.entryList.clear();
                     break;
                 case "reloadList":
                     System.out.println("Reloading the phrase list");

@@ -2,10 +2,8 @@ package app;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,14 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author haywoosd
- */
 @WebServlet(name = "GetEntryServlet", urlPatterns = {"/GetEntryServlet"})
 public class GetEntryServlet extends HttpServlet {
 
-    static List<String> phraseList;
+    static ArrayList<String> phraseList;
 
     static int pos = 0;
     static int t1Points = 0;
@@ -186,7 +180,7 @@ public class GetEntryServlet extends HttpServlet {
     }
 
     public static void loadList() throws IOException {
-        phraseList = Files.readAllLines(Paths.get(System.getProperty("user.home") + "\\desktop\\Fishbowl Entries.txt"));
+        phraseList = AddEntriesServlet.entryList;
         Collections.shuffle(phraseList);
     }
 

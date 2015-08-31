@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
         <title>Manage Game</title>
@@ -13,7 +7,15 @@ and open the template in the editor.
 
     </head>
     <body>
-
+        
+        <form name="restartGame" action="manage" method="POST">
+            Restart the game:
+            <input type="submit" value="Restart" />
+            <input type="hidden" name="action" value="restartGame"/>
+        </form>
+        
+        <br>
+        
         <form action="manage" name ="updateT1Score" method="POST">
             Team 1 Score:<input type="text" name="t1Score" class="scoreInput" value="0" size="5" />
             <input type="submit" value="Update" />
@@ -62,6 +64,14 @@ and open the template in the editor.
             <input type ="hidden" value="updateTimer" name="action"/>
         </form>
 
+        <br>
+        
+        <form name="clearEntries" action="manage" method="POST">
+            Clear all entries:
+            <input type="submit" value="Clear"/>
+            <input type="hidden" value="clearEntries" name="action" />
+        </form>
+        
         <br>
         
         <form name="reloadList" action="manage" method="POST">

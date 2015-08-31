@@ -1,21 +1,19 @@
 package app;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author haywoosd
- */
 @WebServlet(name = "addEntries", urlPatterns = {"/addEntries"})
 public class AddEntriesServlet extends HttpServlet {
+
+    public static ArrayList<String> entryList = new ArrayList<>();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, boolean failed, int numMissing)
             throws ServletException, IOException {
@@ -55,7 +53,7 @@ public class AddEntriesServlet extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response, false, 0);
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -64,29 +62,19 @@ public class AddEntriesServlet extends HttpServlet {
         int numMissing = 0;
         int numEntries = Integer.parseInt(request.getParameter("numEntries"));
 
-        File entriesFile = new File(System.getProperty("user.home") + "\\desktop\\Fishbowl Entries.txt");
+        for (int i = 1; i < numEntries + 1; i++) {
 
-        synchronized (AddEntriesServlet.class) {
+            String tempEntry = request.getParameter("entry" + i).trim();
 
-            try (FileWriter entryWriter = new FileWriter(entriesFile, true)) {
-                String tempEntry;
+            if (!tempEntry.equals("")) {
+                System.out.println("Adding entry: " + tempEntry + " to the Fishbowl file");
 
-                for (int i = 1; i < numEntries + 1; i++) {
+                entryList.add(tempEntry);
 
-                    tempEntry = request.getParameter("entry" + i).trim();
+            } else {
+                failed = true;
+                numMissing++;
 
-                    if (!tempEntry.equals("")) {
-                        System.out.println("Adding entry: " + tempEntry + " to the Fishbowl file");
-
-                        entryWriter.write(tempEntry);
-                        entryWriter.write(System.getProperty("line.separator"));
-
-                    } else {
-                        failed = true;
-                        numMissing++;
-
-                    }
-                }
             }
         }
         processRequest(request, response, failed, numMissing);
