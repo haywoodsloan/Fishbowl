@@ -1,6 +1,5 @@
 package app;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -19,28 +18,46 @@ public class AddEntriesServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Fishbowl!</title>");
-            out.println("<link rel=\"stylesheet\" href=\"index.css\">");
-            out.println("</head>");
-            out.println("<body>");
 
             if (failed) {
-                out.println("<header>Warning: less than 5 entries have been submitted!<br>Missing " + numMissing + " entries! Submit them below:</header>");
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Fishbowl!</title>");
+                out.println("<meta charset=\"UTF-8\">");
+                out.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+                out.println("<link rel=\"stylesheet\" href=\"entries.css\">");
+                out.println("</head>");
+                out.println("<body>");
+
+                out.println("<header>Warning: less than 5 entries have been submitted!</header>");
+                out.println("<header>Missing " + numMissing + " entries! Submit them below:</header>");
+                
                 out.println("<form name=\"entryForm\" action=\"addEntries\" method=\"POST\" autocomplete=\"off\">");
 
                 for (int i = 1; i < numMissing + 1; i++) {
-                    out.println("<input type=\"text\" name=\"entry" + i + "\" value=\"\" size=\"20\" /><br>");
+                    out.println("<input type=\"text\" name=\"entry" + i + "\" value=\"\" class=\"typeField\" /><br>");
                 }
 
                 out.println("<input type=\"hidden\" name =\"numEntries\" value =\"" + numMissing + "\"/>");
-                out.println("<input type=\"submit\" value=\"Submit\" />");
+                out.println("<input type=\"submit\" value=\"Submit\" class=\"submitButton\"/>");
 
             } else {
-                out.println("<h1>All entries have been submitted!</h1>");
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Fishbowl!</title>");
+                out.println("<meta charset=\"UTF-8\">");
+                out.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+                out.println("<link rel=\"stylesheet\" href=\"addEntries.css\">");
+                out.println("</head>");
+                out.println("<body>");
+
+                out.println("<h1>All your entries have been submitted!</h1>");
+                out.println("<form method = \"GET\" name=\"playGame\" action=\"play.html\">");
+                out.println("<h1>If everyone's entries have been submitted you may now play!</h1>");
+                out.println("<input type=\"submit\" value=\"Play Game\" />");
+                out.println("</form>");
             }
 
             out.println("</body>");

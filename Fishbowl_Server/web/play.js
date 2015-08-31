@@ -21,7 +21,6 @@ if (tempResults[4].indexOf("false") !== -1) {
     document.getElementById("resumeBtn").onclick = function () {
         advancePhase();
         audio.load();
-        audio.volume = 1.0;
     };
 }
 
