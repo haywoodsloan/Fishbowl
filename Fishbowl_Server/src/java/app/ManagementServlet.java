@@ -72,8 +72,7 @@ public class ManagementServlet extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        if (null != action
-                && ("127.0.0.1".equals(request.getRemoteAddr()) || "0:0:0:0:0:0:0:1".equals(request.getRemoteAddr()))) {
+        if (null != action && ("127.0.0.1".equals(request.getRemoteAddr()) || "0:0:0:0:0:0:0:1".equals(request.getRemoteAddr()))) {
             switch (action) {
                 case "restartGame":
                     System.out.println("Restarting the game");
