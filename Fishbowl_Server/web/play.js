@@ -34,11 +34,11 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
     };
 
     window.ontouchend = function (event) {
-        if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.15) {
+        if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.15
+                && Math.abs((event.changedTouches[0].clientY - touchStartLocation.clientY) / screen.height) < 0.10) {
             lastPhrase();
         }
     };
-
 } else {
 
     window.onkeyup = function (event) {
@@ -46,7 +46,6 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
             lastPhrase();
         }
     };
-
 }
 
 function timerUpdate() {
@@ -149,7 +148,7 @@ function lastPhrase() {
     results = xmlHttp.responseText.split("\n");
 
     if (results[4].indexOf("false") !== -1) {
-
+        
         document.getElementById("phrase").innerHTML = results[0];
 
         updatePage(results[1], results[2], results[3]);
@@ -206,33 +205,29 @@ function setClick(enabled) {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             window.ontouchend = function (event) {
 
-                if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.15) {
+                if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.15
+                        && Math.abs((event.changedTouches[0].clientY - touchStartLocation.clientY) / screen.height) < 0.10) {
                     lastPhrase();
                 } else if (Math.abs((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) < 0.01
                         && Math.abs((event.changedTouches[0].clientY - touchStartLocation.clientY) / screen.height) < 0.01) {
                     nextPhrase(true);
                 }
-
             };
-
         } else {
-
             window.onclick = function () {
                 nextPhrase(true);
             };
         }
-
     } else {
 
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             window.ontouchend = function (event) {
 
-                if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.15) {
+                if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.15
+                        && Math.abs((event.changedTouches[0].clientY - touchStartLocation.clientY) / screen.height) < 0.10) {
                     lastPhrase();
                 }
-
             };
-
         } else {
             window.onclick = null;
         }
