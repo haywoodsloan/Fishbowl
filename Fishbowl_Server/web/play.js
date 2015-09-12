@@ -2,6 +2,8 @@ var timerInv = null;
 var touchStartLocation;
 var audio = new Audio('bell.mp3');
 var doneUpdating = true;
+var updateCount = 0;
+var lastUpdateTime;
 var doneLastPhrase = true;
 var doneNextPhrase = true;
 
@@ -33,33 +35,40 @@ function timerUpdate() {
 
     if (doneUpdating) {
 
-        doneUpdating = false;
+        if (updateCount === 0) {
+            doneUpdating = false;
 
-        xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", "GetEntryServlet", false);
-        xmlHttp.send();
+            xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "GetEntryServlet", false);
+            xmlHttp.send();
 
-        results = xmlHttp.responseText.split("\n");
-        updatePage(results[0], results[1], results[2]);
-        timeRemain = results[3];
+            results = xmlHttp.responseText.split("\n");
+            updatePage(results[0], results[1], results[2]);
+            timeRemain = results[3];
 
-        if (results[4].indexOf("true") !== -1) {
-            clearInterval(timerInv);
-            timerInv = null;
+            if (results[4].indexOf("true") !== -1) {
+                clearInterval(timerInv);
+                timerInv = null;
 
-            audio.play();
+                audio.play();
 
-            document.getElementById("phrase").style.color = "red";
-            document.getElementById("phrase").innerHTML = "Time is up. Press resume to continue.";
+                document.getElementById("phrase").style.color = "red";
+                document.getElementById("phrase").innerHTML = "Time is up. Press resume to continue.";
 
-            document.getElementById("resumeBtn").style.visibility = "visible";
+                document.getElementById("resumeBtn").style.visibility = "visible";
 
-            setClick(3);
-            document.getElementById("resumeBtn").onclick = advancePhase;
+                setClick(3);
+                document.getElementById("resumeBtn").onclick = advancePhase;
+            }
+
+            lastUpdateTime = new Date().getTime();
+            setTimerText(timeRemain);
+
+        } else {
+            setTimerText(timeRemain - new Date().getTime() + lastUpdateTime);
         }
 
-        setTimerText(timeRemain);
-
+        updateCount = (updateCount + 1) % 5;
         doneUpdating = true;
     }
 
@@ -88,13 +97,12 @@ function setTimerText(tempTime) {
     } else {
         document.getElementById("timer").innerHTML = minutes + ":" + seconds + ":" + miliseconds;
     }
-
 }
 
 function nextPhrase(increasePoint) {
 
     if (doneNextPhrase) {
-        
+
         doneNextPhrase = false;
 
         xmlHttp = new XMLHttpRequest();
@@ -121,7 +129,6 @@ function nextPhrase(increasePoint) {
         }
 
         updatePage(results[1], results[2], results[3]);
-        
         doneNextPhrase = true;
     }
 }
@@ -206,7 +213,7 @@ function setClick(option) {
 
                 window.ontouchend = function (event) {
 
-                    if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.15
+                    if (((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) > 0.10
                             && Math.abs((event.changedTouches[0].clientY - touchStartLocation.clientY) / screen.height) < 0.10) {
                         lastPhrase();
                     } else if (Math.abs((event.changedTouches[0].clientX - touchStartLocation.clientX) / screen.width) < 0.03
