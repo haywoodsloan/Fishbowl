@@ -17,6 +17,7 @@ public class GetEntryServlet extends HttpServlet {
     static ArrayList<String> phraseList;
 
     static int pos = 0;
+    static int roundStartPos = 0;
     static int t1Points = 0;
     static int t2Points = 0;
     static int activeTeam = 1;
@@ -33,9 +34,9 @@ public class GetEntryServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             if (post) {
-
+                
                 if (!paused) {
-
+                    
                     if (pos < phraseList.size()) {
                         out.println(phraseList.get(pos));
 
@@ -54,15 +55,13 @@ public class GetEntryServlet extends HttpServlet {
                 out.println(t2Points);
                 out.println(activeTeam);
                 out.println(paused);
-
+                
             } else {
-
                 out.println(t1Points);
                 out.println(t2Points);
                 out.println(activeTeam);
                 out.println(timeRemain);
                 out.println(paused);
-
             }
 
         }
@@ -107,11 +106,11 @@ public class GetEntryServlet extends HttpServlet {
 
         if (request.getParameter("decreasePoints") != null) {
 
-            if (pos > 1 && !paused) {
+            if (pos > roundStartPos + 1 && !paused) {
 
-                if (activeTeam == 1 && !paused) {
+                if (activeTeam == 1) {
                     t1Points--;
-                } else if (!paused) {
+                } else {
                     t2Points--;
                 }
 
@@ -147,11 +146,10 @@ public class GetEntryServlet extends HttpServlet {
         } else {
 
             if (paused) {
-                
+                roundStartPos = pos;
                 paused = false;
                 lastUpdateTime = System.currentTimeMillis() - (60000 - timeRemain);
             } else {
-                
                 pos--;
             }
         }
