@@ -68,7 +68,7 @@ public class AddEntriesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response, false, 0);
+        processRequest(request, response, Boolean.parseBoolean(request.getParameter("failed")), Integer.parseInt(request.getParameter("numMissing")));
     }
 
     @Override
@@ -94,7 +94,8 @@ public class AddEntriesServlet extends HttpServlet {
                     numMissing++;
                 }
             }
-            processRequest(request, response, failed, numMissing);
+            
+            response.sendRedirect("/addEntries?failed=" + failed + "&numMissing=" + numMissing);
         }
     }
 
