@@ -37,7 +37,7 @@ public class GetEntryServlet extends HttpServlet {
                 
                 if (!paused) {
                     
-                    if (pos < phraseList.size()) {
+                    if (pos < phraseList.size() && pos > -1) {
                         out.println(phraseList.get(pos));
 
                         pos++;
@@ -129,10 +129,7 @@ public class GetEntryServlet extends HttpServlet {
                 
                 lastUpdateTime = System.currentTimeMillis() - (60000 - timeRemain);
 
-                pos = phraseList.size() - 1;
-                
-            } else if (!paused){
-                pos--;
+                pos = phraseList.size() - 1;  
             }
 
         } else if (request.getParameter("increasePoints").equals("true")) {

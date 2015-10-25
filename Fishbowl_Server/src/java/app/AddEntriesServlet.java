@@ -32,7 +32,7 @@ public class AddEntriesServlet extends HttpServlet {
 
                 out.println("<header>Warning: less than 5 entries have been submitted!</header>");
                 out.println("<header>Missing " + numMissing + " entries! Submit them below:</header>");
-                
+
                 out.println("<form name=\"entryForm\" action=\"addEntries\" method=\"POST\" autocomplete=\"off\">");
 
                 for (int i = 1; i < numMissing + 1; i++) {
@@ -75,26 +75,27 @@ public class AddEntriesServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        boolean failed = false;
-        int numMissing = 0;
-        int numEntries = Integer.parseInt(request.getParameter("numEntries"));
+        synchronized (AddEntriesServlet.class) {
+            boolean failed = false;
+            int numMissing = 0;
+            int numEntries = Integer.parseInt(request.getParameter("numEntries"));
 
-        for (int i = 1; i < numEntries + 1; i++) {
+            for (int i = 1; i < numEntries + 1; i++) {
 
-            String tempEntry = request.getParameter("entry" + i).trim();
+                String tempEntry = request.getParameter("entry" + i).trim();
 
-            if (!tempEntry.equals("")) {
-                System.out.println("Adding entry: " + tempEntry + " to the Fishbowl file");
+                if (!tempEntry.equals("")) {
+                    System.out.println("Adding entry: " + tempEntry + " to the Fishbowl file");
 
-                entryList.add(tempEntry);
+                    entryList.add(tempEntry);
 
-            } else {
-                failed = true;
-                numMissing++;
-
+                } else {
+                    failed = true;
+                    numMissing++;
+                }
             }
+            processRequest(request, response, failed, numMissing);
         }
-        processRequest(request, response, failed, numMissing);
     }
 
     @Override

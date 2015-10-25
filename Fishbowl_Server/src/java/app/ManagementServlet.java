@@ -3,6 +3,7 @@ package app;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 import javax.servlet.ServletException;
@@ -26,6 +27,21 @@ public class ManagementServlet extends HttpServlet {
 
                 while (scannedInput.hasNext()) {
                     out.println(scannedInput.nextLine());
+                }
+
+                if (!AddEntriesServlet.entryList.isEmpty()) {
+                    out.println("<form name=\"deleteList\" action=\"manage\" method=\"POST\">");
+                    out.println("What phrase should be deleted: <select name=\"deletedPhrase\" class=\"scoreInput\">");
+
+                    Collections.sort(AddEntriesServlet.entryList);
+                    for (int i = 0; i < AddEntriesServlet.entryList.size(); i++) {
+                        out.println("<option>" + AddEntriesServlet.entryList.get(i) + "</option>");
+                    }
+
+                    out.println("</select>");
+                    out.println("<input type=\"hidden\" value=\"deleteList\" name=\"action\"/>");
+                    out.println("<input type=\"submit\" value=\"Delete\" />");
+                    out.println("</form>");
                 }
 
                 if (GetEntryServlet.phraseList != null) {
@@ -149,6 +165,16 @@ public class ManagementServlet extends HttpServlet {
                         }
                     }
                     break;
+                case "deleteList":
+                    System.out.println("Deleting the following phrase: " + request.getParameter("deletedPhrase"));
+                    for (int i = 0; i < AddEntriesServlet.entryList.size(); i++){
+                        
+                        if (AddEntriesServlet.entryList.get(i).equals(request.getParameter("deletedPhrase"))){
+                            AddEntriesServlet.entryList.remove(i);
+                            break;
+                        }
+                    }
+                break;
             }
         }
 
