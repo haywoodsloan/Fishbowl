@@ -36,7 +36,7 @@ public class AddEntriesServlet extends HttpServlet {
                 out.println("<form name=\"entryForm\" action=\"addEntries\" method=\"POST\" autocomplete=\"off\">");
 
                 for (int i = 1; i < numMissing + 1; i++) {
-                    out.println("<input type=\"text\" name=\"entry" + i + "\" value=\"\" class=\"typeField\" /><br>");
+                    out.println("<input type=\"text\" name=\"entry" + i + "\" value=\"\" class=\"typeField\" maxlength = 35 /><br>");
                 }
 
                 out.println("<input type=\"hidden\" name =\"numEntries\" value =\"" + numMissing + "\"/>");
