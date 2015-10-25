@@ -9,6 +9,6 @@ and open the template in the editor.
 */
 
 input{
-    width: 200px;
     font-size: 35px;
+    width: 100%
 }
