@@ -14,3 +14,14 @@ header{
 .submitButton {
     font-size: 25px;
 }
+
+.cancelButton{
+    font-size: 25px;
+    margin-left: 10px; 
+    visibility: hidden;
+}
+
+.noticeText {    
+    color: red;
+    visibility: hidden;
+}

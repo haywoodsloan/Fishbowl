@@ -9,7 +9,7 @@
     </head>
     <body>
         
-        <script src = "entries.js"></script>
+        <script src="entries.js"></script>
          
         <header>Submit your entries below:</header>
 
@@ -23,7 +23,10 @@
             
             <input type="hidden" name ="numEntries" value ="5"/>
             
-            <input type="submit" value="Submit" onclick ="return submitConfirm()" class="submitButton"/>
+            <input type="submit" value="Submit" id="submitButton" onclick="return submitConfirm()" class="submitButton" />
+            <input type="button" value ="Cancel" id="cancelButton" onclick="cancelSubmit()" class="cancelButton" ><br>
+            
+            <label class="noticeText" id="noticeLabel">Test Text</label>
             
         </form>
          
