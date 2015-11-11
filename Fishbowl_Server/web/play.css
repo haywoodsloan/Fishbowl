@@ -47,8 +47,6 @@ input{
 
     min-height:100%;
 
-    font-size: 50px;
-    color: red;
     word-wrap: break-word;
 
     display: flex;
@@ -152,5 +150,12 @@ input{
     left:5px;
     right:5px;
 
+}
+
+p{
+    font-size: 50px;
+    color: red;
+    
+    max-width:100%;
 }
 
