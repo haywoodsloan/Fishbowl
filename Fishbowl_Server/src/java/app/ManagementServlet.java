@@ -178,7 +178,7 @@ public class ManagementServlet extends HttpServlet {
             }
         }
 
-        processRequest(request, response);
+        response.sendRedirect("/manage");
     }
 
     @Override

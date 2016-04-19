@@ -34,9 +34,9 @@ public class GetEntryServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             if (post) {
-                
+
                 if (!paused) {
-                    
+
                     if (pos < phraseList.size() && pos > -1) {
                         out.println(phraseList.get(pos));
 
@@ -55,7 +55,7 @@ public class GetEntryServlet extends HttpServlet {
                 out.println(t2Points);
                 out.println(activeTeam);
                 out.println(paused);
-                
+
             } else {
                 out.println(t1Points);
                 out.println(t2Points);
@@ -117,7 +117,7 @@ public class GetEntryServlet extends HttpServlet {
                 pos -= 2;
 
             } else if (paused && timeRemain < 60000) {
-                
+
                 if (activeTeam == 1 && timeRemain < 60000) {
                     t1Points--;
                 } else if (timeRemain < 60000) {
@@ -126,12 +126,11 @@ public class GetEntryServlet extends HttpServlet {
 
                 paused = false;
                 randomize = false;
-                
+
                 lastUpdateTime = System.currentTimeMillis() - (60000 - timeRemain);
 
-                pos = phraseList.size() - 1;  
+                pos = phraseList.size() - 1;
             }
-
         } else if (request.getParameter("increasePoints").equals("true")) {
 
             if (activeTeam == 1 && !paused) {
@@ -139,21 +138,18 @@ public class GetEntryServlet extends HttpServlet {
             } else if (!paused) {
                 t2Points++;
             }
-
+            
+        } else if (paused) {
+            roundStartPos = pos;
+            paused = false;
+            lastUpdateTime = System.currentTimeMillis() - (60000 - timeRemain);
         } else {
-
-            if (paused) {
-                roundStartPos = pos;
-                paused = false;
-                lastUpdateTime = System.currentTimeMillis() - (60000 - timeRemain);
-            } else {
-                pos--;
-            }
+            pos--;
         }
 
         if (randomize) {
             Collections.shuffle(phraseList);
-            
+
             randomize = false;
         }
 
@@ -169,6 +165,7 @@ public class GetEntryServlet extends HttpServlet {
             }
         }
     }
+
     @Override
     public String getServletInfo() {
         return "Short description";
